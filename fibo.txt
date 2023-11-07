@@ -1,0 +1,57 @@
+import time
+
+def fibo_recur(n):
+
+    if (n<=1):
+        return n
+    
+    else:
+        return fibo_recur(n-1) + fibo_recur(n-2)
+
+    
+def fibo_iter(n):
+    if(n<=1):
+        return n
+    elif(n==2):
+        return[0,1]
+    
+    fib_series=[0,1]
+    for i in range(2,n):
+        next_fib = fib_series[-1]+ fib_series[-2]
+        fib_series.append(next_fib)
+
+    return fib_series
+
+while True:
+    print("Fibonacci series using:\n1.Iteration\n2.Recursion")
+    c=int(input("Enter your choice:"))
+
+    if c==1:
+        n=int(input("Enter the number: "))
+        print("Fibonacci series using iteration:")
+        result = fibo_iter(n)
+    
+        for i in result:
+            print(i)
+        
+        init = time.time()
+
+        print(f"It took {time.time() - init} seconds")
+
+
+    elif c==2:
+        n=int(input("Enter the number: "))
+        if(n<=0):
+            print("Please enter a positive integer.")
+
+        else:
+            print("Fibonacci series using recursion:")
+            for i in range(n):
+                print(fibo_recur(i))
+
+        init = time.time()
+        print(f"It took {time.time() - init} seconds")
+
+    else:
+        print("Invalid Choice")
+

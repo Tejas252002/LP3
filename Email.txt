@@ -1,0 +1,136 @@
+				Email.csv
+
+
+import pandas as pd
+import seaborn as sns
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import ConfusionMatrixDisplay,accuracy_score
+from sklearn.metrics import classification_report
+import numpy as np 
+import matplotlib.pyplot as plt 
+from sklearn import svm
+
+
+
+df=pd.read_csv('emails.csv')
+df.head(7)
+
+
+df.shape
+
+
+
+x=df.drop(['Email No.','Prediction'],axis=1)
+y=df['Prediction']
+
+
+sns.countplot(x=y)
+
+
+y.value_counts()
+
+
+
+scaler=MinMaxScaler();
+result=scaler.fit_transform(x)
+
+
+X_train, X_test, Y_train, Y_test = train_test_split(result, y, random_state=0, test_size=0.2)
+
+
+knn=KNeighborsClassifier(n_neighbors=5)
+
+
+knn.fit(X_train,Y_train)
+
+
+ypred=knn.predict(X_test)
+
+
+ConfusionMatrixDisplay.from_predictions(Y_test, ypred)
+
+
+accuracy_score(Y_test, ypred)
+
+
+print(classification_report(Y_test, ypred))
+
+
+print(df.shape)
+
+
+x = df.drop(['Email No.', 'Prediction'], axis=1)
+y = df['Prediction']
+
+
+sns.countplot(x=y)
+plt.show()
+
+
+
+scaler = MinMaxScaler()
+X_scaled = scaler.fit_transform(x)
+
+
+
+feature1_index = 0
+feature2_index = 1 
+
+
+X_selected_features = X_scaled[:, [feature1_index, feature2_index]]
+
+
+X_train, X_test, Y_train, Y_test = train_test_split(X_selected_features, y, test_size=0.2, random_state=42)
+
+
+svm_classifier = svm.SVC(kernel='linear') 
+
+
+svm_classifier.fit(X_train, Y_train)
+
+
+y_pred_svm = svm_classifier.predict(X_test)
+
+
+
+from sklearn.metrics import confusion_matrix
+confusion_matrix_svm = confusion_matrix(Y_test, y_pred_svm)
+print("Confusion Matrix:")
+print(confusion_matrix_svm)
+
+
+
+x_min, x_max = X_selected_features[:, 0].min() - 0.1, X_selected_features[:, 0].max() + 0.1
+y_min, y_max = X_selected_features[:, 1].min() - 0.1, X_selected_features[:, 1].max() + 0.1
+xx, yy = np.meshgrid(np.linspace(x_min, x_max, 500), np.linspace(y_min, y_max, 500))
+
+
+Z = svm_classifier.decision_function(np.c_[xx.ravel(), yy.ravel()])
+Z = Z.reshape(xx.shape)
+
+
+
+plt.contourf(xx, yy, Z, levels=[-1, 0, 1], alpha=0.5, cmap=plt.cm.Paired)
+# Scatter plot of the data points
+plt.scatter(X_selected_features[:, 0], X_selected_features[:, 1], c=y, cmap=plt.cm.Paired)
+# Set labels and title
+plt.xlabel(f'Feature {feature1_index + 1}')
+plt.ylabel(f'Feature {feature2_index + 1}')
+plt.title('SVM Decision Boundary')
+# Display the plot
+plt.show()
+
+
+
+accuracy_svm = accuracy_score(Y_test, y_pred_svm)
+print(f"Accuracy Score: {accuracy_svm:.2f}")
+classification_rep_svm = classification_report(Y_test, y_pred_svm)
+print("Classification Report:")
+print(classification_rep_svm)
+
+
+
+
+
